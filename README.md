@@ -1,4 +1,4 @@
-# odin-js-template
+# odin-battleship
 
 JavaScript template for The Odin Project.
 
