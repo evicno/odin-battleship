@@ -6,6 +6,10 @@ export function Ship(length, horizontal = true, hits = 0, sunk = false) {
     } else return;
   }
 
+  function getHits() {
+    return hits;
+  }
+
   function isSunk() {
     if (sunk === true || hits === length) {
       sunk = true;
@@ -21,5 +25,5 @@ export function Ship(length, horizontal = true, hits = 0, sunk = false) {
     horizontal = !horizontal;
   }
 
-  return { length, isHorizontal, hit, isSunk, changeDirection };
+  return { length, isHorizontal, hit, getHits, isSunk, changeDirection };
 }

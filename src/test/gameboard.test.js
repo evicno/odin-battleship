@@ -7,6 +7,7 @@ beforeEach(() => {
   gameboard = Gameboard();
 });
 
+// at
 test('at on an empty gameboard', () => {
   expect(gameboard.at(0, 0)).toBeNull();
 });
@@ -43,6 +44,7 @@ test('at detects vertical ship end', () => {
   expect(gameboard.at(4, 0)).toBeNull();
 });
 
+// placeShip
 test('place ship out of board 1', () => {
   let ship = Ship(3);
   expect(() => {
@@ -70,4 +72,72 @@ test('place ship out of board 4', () => {
   expect(() => {
     gameboard.placeShip(ship, 8, 0);
   }).toThrow('out of board');
+});
+
+test('cannot place a ship on another ship 1', () => {
+  let ship1 = Ship(3);
+  let ship2 = Ship(3);
+  gameboard.placeShip(ship1, 0, 0);
+  expect(() => {
+    gameboard.placeShip(ship2, 0, 2);
+  }).toThrow('already a ship here');
+});
+
+test('cannot place a ship on another ship 2', () => {
+  let ship1 = Ship(3);
+  let ship2 = Ship(3);
+  ship2.changeDirection();
+  gameboard.placeShip(ship1, 2, 0);
+  expect(() => {
+    gameboard.placeShip(ship2, 0, 0);
+  }).toThrow('already a ship here');
+});
+
+// receiveAttack
+test('receiveAttack out of board 1', () => {
+  expect(() => {
+    gameboard.receiveAttack(0, 10);
+  }).toThrow('attack out of board');
+});
+
+test('receiveAttack out of board 2', () => {
+  expect(() => {
+    gameboard.receiveAttack(-1, 0);
+  }).toThrow('attack out of board');
+});
+
+test('receiveAttack sends hit() to the correct ship', () => {
+  let ship = Ship(3);
+  gameboard.placeShip(ship, 0, 0);
+  gameboard.receiveAttack(0, 0);
+  expect(ship.getHits()).toEqual(1);
+});
+
+test('receiveAttack cannot send hit twice for one square', () => {
+  let ship = Ship(3);
+  gameboard.placeShip(ship, 0, 0);
+  gameboard.receiveAttack(0, 0);
+  gameboard.receiveAttack(0, 0);
+  expect(ship.getHits()).toEqual(1);
+});
+
+test('receiveAttack records a missed shot', () => {
+  gameboard.receiveAttack(0, 0);
+  expect(gameboard.at(0, 0)).toEqual('miss');
+});
+
+test('receiveAttack does nothing if hits a already missed square', () => {
+  gameboard.receiveAttack(0, 0);
+  gameboard.receiveAttack(0, 0);
+  expect(gameboard.at(0, 0)).toEqual('miss');
+});
+
+// end of game
+test('can detect when all ships have been sunk', () => {
+  let ship = Ship(3);
+  gameboard.placeShip(ship, 0, 0);
+  gameboard.receiveAttack(0, 0);
+  gameboard.receiveAttack(0, 1);
+  gameboard.receiveAttack(0, 2);
+  expect(gameboard.isGameOver()).toBeTruthy();
 });
