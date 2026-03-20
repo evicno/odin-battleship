@@ -1,7 +1,7 @@
-import { Gameboard } from './gameboard';
+import { Gameboard } from './gameboard.js';
 
-export function Player(type) {
-  let board = Gameboard();
+export function Player(type, size = 10) {
+  let board = Gameboard(size);
   function getType() {
     if (type === 'human') return 'human';
     else if (type === 'computer') return 'computer';

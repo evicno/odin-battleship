@@ -12,6 +12,15 @@ test('at on an empty gameboard', () => {
   expect(gameboard.at(0, 0)).toBeNull();
 });
 
+test('at returns undefined if out of board 1', () => {
+  expect(gameboard.at(10, 0)).toBeUndefined();
+});
+
+test('at returns undefined if out of board 2', () => {
+  let gameboard2 = Gameboard(6);
+  expect(gameboard2.at(6, 0)).toBeUndefined();
+});
+
 test('at detects ship', () => {
   let ship = Ship(3);
   gameboard.placeShip(ship, 1, 0);
@@ -74,6 +83,15 @@ test('place ship out of board 4', () => {
   }).toThrow('out of board');
 });
 
+test('place ship out of board 5', () => {
+  gameboard = Gameboard(6);
+  let ship = Ship(3);
+  ship.changeDirection();
+  expect(() => {
+    gameboard.placeShip(ship, 4, 0);
+  }).toThrow('out of board');
+});
+
 test('cannot place a ship on another ship 1', () => {
   let ship1 = Ship(3);
   let ship2 = Ship(3);
@@ -103,6 +121,13 @@ test('receiveAttack out of board 1', () => {
 test('receiveAttack out of board 2', () => {
   expect(() => {
     gameboard.receiveAttack(-1, 0);
+  }).toThrow('attack out of board');
+});
+
+test('receiveAttack out of board 3', () => {
+  gameboard = Gameboard(6);
+  expect(() => {
+    gameboard.receiveAttack(6, 0);
   }).toThrow('attack out of board');
 });
 

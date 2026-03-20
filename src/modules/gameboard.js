@@ -18,17 +18,19 @@ export function Gameboard(size = 10) {
   }
 
   function at(row, col) {
-    return board[row][col];
+    if (row < 0 || row > size - 1 || col < 0 || col > size - 1) {
+      return undefined;
+    } else return board[row][col];
   }
 
   function placeShip(ship, row, col) {
-    if (row < 0 || row > 9 || col < 0 || col > 9) {
+    if (row < 0 || row > size - 1 || col < 0 || col > size - 1) {
       throw new Error('out of board');
     }
     let newShip = [];
     if (ship.isHorizontal() === true) {
       // horizontal ship
-      if (col + ship.length > 9) {
+      if (col + ship.length > size - 1) {
         throw new Error('out of board');
       }
       for (let i = 0; i < ship.length; i++) {
@@ -42,7 +44,7 @@ export function Gameboard(size = 10) {
       }
     } else {
       // vertical ship
-      if (row + ship.length > 9) {
+      if (row + ship.length > size - 1) {
         throw new Error('out of board');
       }
       for (let i = 0; i < ship.length; i++) {
@@ -59,15 +61,19 @@ export function Gameboard(size = 10) {
   }
 
   function receiveAttack(row, col) {
-    if (row < 0 || row > 9 || col < 0 || col > 9) {
+    if (row < 0 || row > size - 1 || col < 0 || col > size - 1) {
       throw new Error('attack out of board');
     }
-    if (board[row][col] === null || board[row][col] === 'miss') {
+    if (board[row][col] === null) {
       board[row][col] = 'miss';
+      return 'miss';
+    } else if (board[row][col] === 'miss') {
+      return;
     } else {
       if (recordHit(row, col) === true) {
         let shipHit = board[row][col];
         shipHit.hit();
+        return 'hit';
       } else return;
     }
   }
@@ -98,5 +104,8 @@ export function Gameboard(size = 10) {
     return gameOver;
   }
 
-  return { at, placeShip, receiveAttack, isGameOver };
+  function getSize() {
+    return size;
+  }
+  return { at, placeShip, receiveAttack, isGameOver, getSize };
 }
