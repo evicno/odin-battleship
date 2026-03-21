@@ -98,7 +98,7 @@ test('cannot place a ship on another ship 1', () => {
   gameboard.placeShip(ship1, 0, 0);
   expect(() => {
     gameboard.placeShip(ship2, 0, 2);
-  }).toThrow('already a ship here');
+  }).toThrow('too close or already a ship here');
 });
 
 test('cannot place a ship on another ship 2', () => {
@@ -108,7 +108,26 @@ test('cannot place a ship on another ship 2', () => {
   gameboard.placeShip(ship1, 2, 0);
   expect(() => {
     gameboard.placeShip(ship2, 0, 0);
-  }).toThrow('already a ship here');
+  }).toThrow('too close or already a ship here');
+});
+
+test('cannot place a ship close to another 1', () => {
+  let ship1 = Ship(3);
+  let ship2 = Ship(3);
+  gameboard.placeShip(ship1, 1, 1);
+  expect(() => {
+    gameboard.placeShip(ship2, 0, 0);
+  }).toThrow('too close or already a ship here');
+});
+
+test('cannot place a ship close to another 2', () => {
+  let ship1 = Ship(3);
+  let ship2 = Ship(3);
+  ship2.changeDirection();
+  gameboard.placeShip(ship1, 1, 1);
+  expect(() => {
+    gameboard.placeShip(ship2, 2, 4);
+  }).toThrow('too close or already a ship here');
 });
 
 // receiveAttack

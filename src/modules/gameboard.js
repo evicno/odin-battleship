@@ -18,13 +18,13 @@ export function Gameboard(size = 10) {
   }
 
   function at(row, col) {
-    if (row < 0 || row > size - 1 || col < 0 || col > size - 1) {
+    if (isOutOfBoard(row, col)) {
       return undefined;
     } else return board[row][col];
   }
 
   function placeShip(ship, row, col) {
-    if (row < 0 || row > size - 1 || col < 0 || col > size - 1) {
+    if (isOutOfBoard(row, col)) {
       throw new Error('out of board');
     }
     let newShip = [];
@@ -34,8 +34,19 @@ export function Gameboard(size = 10) {
         throw new Error('out of board');
       }
       for (let i = 0; i < ship.length; i++) {
-        if (board[row][col + i] != null && board[row][col + i] != 'miss') {
-          throw new Error('already a ship here');
+        if (isABoat(row, col + i)) {
+          throw new Error('too close or already a ship here');
+        } else if (
+          isABoat(row - 1, col + i - 1) ||
+          isABoat(row - 1, col + i) ||
+          isABoat(row - 1, col + i + 1) ||
+          isABoat(row, col + i - 1) ||
+          isABoat(row, col + i + 1) ||
+          isABoat(row + 1, col + i - 1) ||
+          isABoat(row + 1, col + i) ||
+          isABoat(row + 1, col + i + 1)
+        ) {
+          throw new Error('too close or already a ship here');
         } else continue;
       }
       for (let i = 0; i < ship.length; i++) {
@@ -48,8 +59,19 @@ export function Gameboard(size = 10) {
         throw new Error('out of board');
       }
       for (let i = 0; i < ship.length; i++) {
-        if (board[row + i][col] != null && board[row + i][col] != 'miss') {
-          throw new Error('already a ship here');
+        if (isABoat(row + i, col)) {
+          throw new Error('too close or already a ship here');
+        } else if (
+          isABoat(row + i - 1, col - 1) ||
+          isABoat(row + i - 1, col) ||
+          isABoat(row + i - 1, col + 1) ||
+          isABoat(row + i, col - 1) ||
+          isABoat(row + i, col + 1) ||
+          isABoat(row + i + 1, col - 1) ||
+          isABoat(row + i + 1, col) ||
+          isABoat(row + i + 1, col + i + 1)
+        ) {
+          throw new Error('too close or already a ship here');
         } else continue;
       }
       for (let i = 0; i < ship.length; i++) {
@@ -61,7 +83,7 @@ export function Gameboard(size = 10) {
   }
 
   function receiveAttack(row, col) {
-    if (row < 0 || row > size - 1 || col < 0 || col > size - 1) {
+    if (isOutOfBoard(row, col)) {
       throw new Error('attack out of board');
     }
     if (board[row][col] === null) {
@@ -107,5 +129,18 @@ export function Gameboard(size = 10) {
   function getSize() {
     return size;
   }
+
+  function isOutOfBoard(row, col) {
+    if (row < 0 || row > size - 1 || col < 0 || col > size - 1) {
+      return true;
+    }
+  }
+
+  function isABoat(row, col) {
+    if (isOutOfBoard(row, col) || board[row][col] === null) {
+      return false;
+    } else return true;
+  }
+
   return { at, placeShip, receiveAttack, isGameOver, getSize };
 }
