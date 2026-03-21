@@ -122,11 +122,12 @@ test('cannot place a ship close to another 1', () => {
 
 test('cannot place a ship close to another 2', () => {
   let ship1 = Ship(3);
+  ship1.changeDirection();
   let ship2 = Ship(3);
   ship2.changeDirection();
-  gameboard.placeShip(ship1, 1, 1);
+  gameboard.placeShip(ship1, 0, 3);
   expect(() => {
-    gameboard.placeShip(ship2, 2, 4);
+    gameboard.placeShip(ship2, 3, 4);
   }).toThrow('too close or already a ship here');
 });
 

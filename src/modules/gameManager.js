@@ -18,16 +18,8 @@ export const playGame = () => {
   domManager.createGrid(gridTwo, size);
 
   // Place ships
-  let shipOne = Ship(3);
-  let shipTwo = Ship(4);
-  let shipThree = Ship(3);
-  let shipFour = Ship(4);
-  shipTwo.changeDirection();
-  shipThree.changeDirection();
-  boardOne.placeShip(shipOne, 1, 1);
-  boardOne.placeShip(shipTwo, 4, 5);
-  boardTwo.placeShip(shipThree, 2, 0);
-  boardTwo.placeShip(shipFour, 6, 3);
+  setBoard(boardOne);
+  setBoard(boardTwo);
 
   // Display player board with ships, computer board blank
   domManager.renderPlayerOneBoard(boardOne);
@@ -36,6 +28,37 @@ export const playGame = () => {
   domManager.createEventListeners(playSquare);
   let current = playerOne;
 
+  // Set board ready for game
+  function setBoard(board) {
+    let carrier = Ship(5);
+    let battleship = Ship(4);
+    let destroyer = Ship(3);
+    let submarine = Ship(3);
+    let patrolBoat = Ship(2);
+    placeShipRandomly(board, carrier);
+    placeShipRandomly(board, battleship);
+    placeShipRandomly(board, destroyer);
+    placeShipRandomly(board, submarine);
+    placeShipRandomly(board, patrolBoat);
+  }
+
+  // Place a ship randomly on a board
+  function placeShipRandomly(board, ship) {
+    let direction = Math.floor(Math.random() * 2);
+    let row = Math.floor(Math.random() * size);
+    let col = Math.floor(Math.random() * size);
+    if (direction === 1) {
+      ship.changeDirection();
+    }
+    try {
+      board.placeShip(ship, row, col);
+      return;
+    } catch {
+      placeShipRandomly(board, ship);
+    }
+  }
+
+  // Play a round by clicking on a square
   function playSquare(row, col) {
     if (current === playerTwo) {
       return;
@@ -52,7 +75,7 @@ export const playGame = () => {
     }
   }
 
-  //
+  // Round play randomly by the computer
   function computerRound() {
     let row = Math.floor(Math.random() * size);
     let col = Math.floor(Math.random() * size);

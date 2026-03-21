@@ -69,7 +69,7 @@ export function Gameboard(size = 10) {
           isABoat(row + i, col + 1) ||
           isABoat(row + i + 1, col - 1) ||
           isABoat(row + i + 1, col) ||
-          isABoat(row + i + 1, col + i + 1)
+          isABoat(row + i + 1, col + 1)
         ) {
           throw new Error('too close or already a ship here');
         } else continue;
@@ -80,6 +80,7 @@ export function Gameboard(size = 10) {
       }
     }
     shipsOnBoard.push(newShip);
+    return true;
   }
 
   function receiveAttack(row, col) {
