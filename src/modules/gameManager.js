@@ -3,30 +3,33 @@ import { Ship } from './ship.js';
 import { Player } from './player.js';
 import { domManager } from './domManager.js';
 
-export const playGame = () => {
+export const playGame = (() => {
   // create players
   const playerOne = Player('human');
   const playerTwo = Player('computer');
+  let current = playerOne;
   let boardOne = playerOne.board;
   let boardTwo = playerTwo.board;
   const size = boardOne.getSize();
+  domManager.setGridSize(size);
+
+  const getBoardOne = () => {
+    return boardOne;
+  };
 
   // Create grids
-  const gridOne = document.querySelector('#grid-one');
-  const gridTwo = document.querySelector('#grid-two');
-  domManager.createGrid(gridOne, size);
-  domManager.createGrid(gridTwo, size);
+  domManager.initGrids();
 
-  // Place ships
-  setBoard(boardOne);
+  // Set up the game
+  domManager.activateRandomButton(randomBoard);
   setBoard(boardTwo);
 
-  // Display player board with ships, computer board blank
-  domManager.renderPlayerOneBoard(boardOne);
-
-  // Create event listeners
-  domManager.createEventListeners(playSquare);
-  let current = playerOne;
+  // Create a random board
+  function randomBoard() {
+    boardOne.clearBoard();
+    setBoard(boardOne);
+    domManager.activateStartButton(startGame);
+  }
 
   // Set board ready for game
   function setBoard(board) {
@@ -56,6 +59,11 @@ export const playGame = () => {
     } catch {
       placeShipRandomly(board, ship);
     }
+  }
+
+  // Start game
+  function startGame() {
+    domManager.createBoardListeners(playSquare);
   }
 
   // Play a round by clicking on a square
@@ -91,4 +99,6 @@ export const playGame = () => {
       }
     }
   }
-};
+
+  return { getBoardOne };
+})();

@@ -17,6 +17,15 @@ export function Gameboard(size = 10) {
     return board;
   }
 
+  function clearBoard() {
+    board.shipsOnBoard = [];
+    for (let i = 0; i < size; i++) {
+      board[i] = [];
+      for (let j = 0; j < size; j++) {
+        board[i][j] = null;
+      }
+    }
+  }
   function at(row, col) {
     if (isOutOfBoard(row, col)) {
       return undefined;
@@ -143,5 +152,5 @@ export function Gameboard(size = 10) {
     } else return true;
   }
 
-  return { at, placeShip, receiveAttack, isGameOver, getSize };
+  return { clearBoard, at, placeShip, receiveAttack, isGameOver, getSize };
 }
