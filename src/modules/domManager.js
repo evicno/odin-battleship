@@ -8,6 +8,7 @@ export const domManager = (() => {
   const randomButton = document.querySelector('#random');
   const placeButton = document.querySelector('#place');
   const startButton = document.querySelector('.start button');
+  const restartButton = document.querySelector('#restart');
 
   const setGridSize = (size) => {
     gridSize = size;
@@ -21,6 +22,7 @@ export const domManager = (() => {
     createGrid(gridOne);
     createGrid(gridTwo);
     gridTwo.dataset.active = 'false';
+    restartButton.style.visibility = 'hidden';
   }
 
   // Create the DOM structure of a blank board
@@ -39,12 +41,12 @@ export const domManager = (() => {
     }
   }
 
-  // Clear grid one
-  function clearGridOne() {
+  // Clear grid
+  function clearGrid(grid) {
     for (let i = 0; i < gridSize; i++) {
       for (let j = 0; j < gridSize; j++) {
         const square = document.querySelector(
-          `#grid-one [data-row="${i}"][data-col="${j}"]`,
+          `#${grid} [data-row="${i}"][data-col="${j}"]`,
         );
         square.style.backgroundColor = 'white';
       }
@@ -81,7 +83,7 @@ export const domManager = (() => {
   function activateRandomButton(callback) {
     randomButton.addEventListener('click', () => {
       callback();
-      clearGridOne();
+      clearGrid('grid-one');
       renderGridOne();
       startButton.disabled = false;
     });
@@ -93,6 +95,18 @@ export const domManager = (() => {
       placeButton.disabled = true;
       startButton.disabled = true;
       gridTwo.dataset.active = 'true';
+      restartButton.style.visibility = 'visible';
+      callback();
+    });
+  }
+
+  function activateRestartButton(callback) {
+    restartButton.addEventListener('click', () => {
+      restartButton.style.visibility = 'hidden';
+      randomButton.disabled = false;
+      placeButton.disabled = false;
+      clearGrid('grid-one');
+      clearGrid('grid-two');
       callback();
     });
   }
@@ -120,10 +134,9 @@ export const domManager = (() => {
     setGridSize,
     initGrids,
     createGrid,
-    clearGridOne,
-    renderGridOne,
     activateRandomButton,
     activateStartButton,
+    activateRestartButton,
     createBoardListeners,
     changeSquareDisplay,
   };

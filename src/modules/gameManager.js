@@ -19,10 +19,13 @@ export const playGame = (() => {
 
   // Create grids
   domManager.initGrids();
+  setUpGame();
 
   // Set up the game
-  domManager.activateRandomButton(randomBoard);
-  setBoard(boardTwo);
+  function setUpGame() {
+    domManager.activateRandomButton(randomBoard);
+    setBoard(boardTwo);
+  }
 
   // Create a random board
   function randomBoard() {
@@ -33,6 +36,7 @@ export const playGame = (() => {
 
   // Set board ready for game
   function setBoard(board) {
+    board.clearBoard();
     let carrier = Ship(5);
     let battleship = Ship(4);
     let destroyer = Ship(3);
@@ -64,6 +68,7 @@ export const playGame = (() => {
   // Start game
   function startGame() {
     domManager.createBoardListeners(playSquare);
+    domManager.activateRestartButton(restartGame);
   }
 
   // Play a round by clicking on a square
@@ -98,6 +103,12 @@ export const playGame = (() => {
         return;
       }
     }
+  }
+
+  function restartGame() {
+    boardOne.clearBoard();
+    boardTwo.clearBoard();
+    setUpGame();
   }
 
   return { getBoardOne };

@@ -5,4 +5,4 @@ import { Ship } from './modules/ship.js';
 import { Gameboard } from './modules/gameboard.js';
 import { playGame } from './modules/gameManager.js';
 
-playGame();
+playGame;
