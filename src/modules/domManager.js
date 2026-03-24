@@ -72,11 +72,10 @@ export const domManager = (() => {
   }
 
   function createBoardListeners(callback) {
-    const squares = document.querySelectorAll('#grid-two .square');
-    squares.forEach((square) => {
-      square.addEventListener('click', () => {
-        callback(square.dataset.row, square.dataset.col);
-      });
+    gridTwo.addEventListener('click', (event) => {
+      if (event.target.classList.contains('square')) {
+        callback(event.target.dataset.row, event.target.dataset.col);
+      }
     });
   }
 
