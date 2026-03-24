@@ -58,6 +58,10 @@ header {
   filter: blur(2px);
 }
 
+#grid-two[data-active='true'] {
+  cursor: crosshair;
+}
+
 .row {
   display: flex;
 }
@@ -99,4 +103,26 @@ button {
 
 button :disabled {
   filter: blur(2px);
+}
+
+dialog:open {
+  height: 150px;
+  width: 350px;
+  color: rgb(54, 6, 77);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  font-size: 30px;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+dialog button {
+  font-size: 16px;
+  width: 100px;
+}
+
+dialog::backdrop {
+  backdrop-filter: blur(3px);
 }

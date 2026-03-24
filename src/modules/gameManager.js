@@ -81,7 +81,8 @@ export const playGame = (() => {
         domManager.changeSquareDisplay('two', row, col, result);
         current = playerTwo;
         if (boardTwo.isGameOver() === true) {
-          console.log('you win!');
+          domManager.showResult('You win!');
+          restartGame();
           return;
         } else computerRound();
       }
@@ -99,7 +100,8 @@ export const playGame = (() => {
       domManager.changeSquareDisplay('one', row, col, result);
       current = playerOne;
       if (boardOne.isGameOver() === true) {
-        console.log('you lose!');
+        domManager.showResult('You lose!');
+        restartGame();
         return;
       }
     }

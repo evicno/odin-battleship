@@ -102,11 +102,7 @@ export const domManager = (() => {
 
   function activateRestartButton(callback) {
     restartButton.addEventListener('click', () => {
-      restartButton.style.visibility = 'hidden';
-      randomButton.disabled = false;
-      placeButton.disabled = false;
-      clearGrid('grid-one');
-      clearGrid('grid-two');
+      restartGame();
       callback();
     });
   }
@@ -130,6 +126,27 @@ export const domManager = (() => {
     }
   }
 
+  function restartGame() {
+    restartButton.style.visibility = 'hidden';
+    randomButton.disabled = false;
+    placeButton.disabled = false;
+    clearGrid('grid-one');
+    clearGrid('grid-two');
+    gridTwo.dataset.active = 'false';
+  }
+
+  function showResult(text) {
+    const dialog = document.querySelector('dialog');
+    const result = document.querySelector('dialog p');
+    const closeDialog = document.querySelector('dialog button');
+    result.textContent = text;
+    dialog.showModal();
+    closeDialog.addEventListener('click', () => {
+      dialog.close();
+      restartGame();
+    });
+  }
+
   return {
     setGridSize,
     initGrids,
@@ -139,5 +156,6 @@ export const domManager = (() => {
     activateRestartButton,
     createBoardListeners,
     changeSquareDisplay,
+    showResult,
   };
 })();
