@@ -18,7 +18,8 @@ export function Gameboard(size = 10) {
   }
 
   function clearBoard() {
-    board.shipsOnBoard = [];
+    shipsOnBoard.length = 0;
+    gameOver = false;
     for (let i = 0; i < size; i++) {
       board[i] = [];
       for (let j = 0; j < size; j++) {
