@@ -25,6 +25,7 @@ export const playGame = (() => {
   // Set up the game
   function setUpGame() {
     domManager.activateRandomButton(randomBoard);
+    domManager.activatePlaceButton();
     domManager.activateStartButton(startGame);
     setBoard(boardTwo);
     current = playerOne;

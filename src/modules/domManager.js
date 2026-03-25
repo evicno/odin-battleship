@@ -11,6 +11,7 @@ export const domManager = (() => {
   const placeButton = document.querySelector('#place');
   const startButton = document.querySelector('.start button');
   const restartButton = document.querySelector('#restart');
+  const shipContainer = document.querySelector('.ship-container');
 
   const setGridSize = (size) => {
     gridSize = size;
@@ -97,6 +98,17 @@ export const domManager = (() => {
     });
   }
 
+  function activatePlaceButton() {
+    placeButton.addEventListener('click', () => {
+      clearGrid('grid-one');
+      placeShip(5);
+      // placeShip(4);
+      // placeShip(3);
+      // placeShip(3);
+      // placeShip(2);
+    });
+  }
+
   function activateStartButton(callback) {
     startButton.addEventListener('click', () => {
       gameStarted = true;
@@ -113,6 +125,30 @@ export const domManager = (() => {
     restartButton.addEventListener('click', () => {
       restartGame();
       callback();
+    });
+  }
+
+  function placeShip(shipSize) {
+    if (shipSize != 2 && shipSize != 3 && shipSize != 4 && shipSize != 5) {
+      return;
+    }
+    shipContainer.replaceChildren();
+    const ship = document.createElement('div');
+    ship.classList.add('ship');
+    ship.id = 'size' + shipSize;
+    ship.dataset.direction = 'col';
+    for (let i = 0; i < shipSize; i++) {
+      const shipSquare = document.createElement('div');
+      shipSquare.classList.add('ship-square');
+      ship.appendChild(shipSquare);
+    }
+    shipContainer.appendChild(ship);
+    ship.addEventListener('click', () => {
+      if (ship.dataset.direction === 'col') {
+        ship.dataset.direction = 'row';
+      } else {
+        ship.dataset.direction = 'col';
+      }
     });
   }
 
@@ -164,6 +200,7 @@ export const domManager = (() => {
     createGrid,
     setClickCallback,
     activateRandomButton,
+    activatePlaceButton,
     activateStartButton,
     activateRestartButton,
     createBoardListeners,

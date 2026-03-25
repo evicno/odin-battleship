@@ -28,7 +28,7 @@ body {
 }
 
 header {
-  height: 300px;
+  height: 220px;
   text-align: center;
   font-size: 100px;
   display: flex;
@@ -66,7 +66,8 @@ header {
   display: flex;
 }
 
-.square {
+.square,
+.ship-square {
   height: 30px;
   width: 30px;
   border: 1px solid black;
@@ -125,4 +126,61 @@ dialog button {
 
 dialog::backdrop {
   backdrop-filter: blur(3px);
+}
+
+.ship-container {
+  height: 152px;
+  width: 300px;
+  align-items: center;
+  padding-left: 138px;
+}
+.ship {
+  border: 1px solid black;
+  background-color: rgb(218, 72, 72);
+  display: flex;
+  align-items: center;
+}
+
+.ship[data-direction='col'] {
+  width: 32px;
+  flex-direction: column;
+}
+
+.ship[data-direction='row'] {
+  height: 32px;
+}
+#size5[data-direction='col'] {
+  height: 152px;
+}
+
+#size5[data-direction='row'] {
+  width: 152px;
+  height: 32px;
+}
+
+#size4[data-direction='col'] {
+  height: 122px;
+}
+
+#size4[data-direction='row'] {
+  height: 32px;
+  width: 122px;
+}
+
+#size3[data-direction='col'] {
+  height: 92px;
+}
+
+#size3[data-direction='row'] {
+  height: 32px;
+  width: 92px;
+}
+
+#size2[data-direction='col'] {
+  height: 62px;
+}
+
+#size2[data-direction='row'] {
+  height: 32px;
+  width: 62px;
 }
