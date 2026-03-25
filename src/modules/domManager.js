@@ -3,6 +3,8 @@ import { playGame } from './gameManager.js';
 
 export const domManager = (() => {
   let gridSize = 0;
+  let onSquareClick = null;
+  let gameStarted = false;
   const gridOne = document.querySelector('#grid-one');
   const gridTwo = document.querySelector('#grid-two');
   const randomButton = document.querySelector('#random');
@@ -21,8 +23,23 @@ export const domManager = (() => {
   function initGrids() {
     createGrid(gridOne);
     createGrid(gridTwo);
+    createBoardListeners();
     gridTwo.dataset.active = 'false';
     restartButton.style.visibility = 'hidden';
+  }
+
+  // Create event listeners for grid-two
+  function createBoardListeners() {
+    gridTwo.addEventListener('click', (event) => {
+      if (event.target.classList.contains('square') && gameStarted === true) {
+        onSquareClick(event.target.dataset.row, event.target.dataset.col);
+      }
+    });
+  }
+
+  // Callback function for grid-two event listeners
+  function setClickCallback(fn) {
+    onSquareClick = fn;
   }
 
   // Create the DOM structure of a blank board
@@ -71,14 +88,6 @@ export const domManager = (() => {
     }
   }
 
-  function createBoardListeners(callback) {
-    gridTwo.addEventListener('click', (event) => {
-      if (event.target.classList.contains('square')) {
-        callback(event.target.dataset.row, event.target.dataset.col);
-      }
-    });
-  }
-
   function activateRandomButton(callback) {
     randomButton.addEventListener('click', () => {
       callback();
@@ -90,6 +99,7 @@ export const domManager = (() => {
 
   function activateStartButton(callback) {
     startButton.addEventListener('click', () => {
+      gameStarted = true;
       randomButton.disabled = true;
       placeButton.disabled = true;
       startButton.disabled = true;
@@ -126,6 +136,7 @@ export const domManager = (() => {
   }
 
   function restartGame() {
+    gameStarted = false;
     restartButton.style.visibility = 'hidden';
     randomButton.disabled = false;
     placeButton.disabled = false;
@@ -138,6 +149,7 @@ export const domManager = (() => {
     const dialog = document.querySelector('dialog');
     const result = document.querySelector('dialog p');
     const closeDialog = document.querySelector('dialog button');
+    gameStarted = false;
     result.textContent = text;
     dialog.showModal();
     closeDialog.addEventListener('click', () => {
@@ -150,6 +162,7 @@ export const domManager = (() => {
     setGridSize,
     initGrids,
     createGrid,
+    setClickCallback,
     activateRandomButton,
     activateStartButton,
     activateRestartButton,

@@ -19,19 +19,20 @@ export const playGame = (() => {
 
   // Create grids
   domManager.initGrids();
+  domManager.setClickCallback(playSquare);
   setUpGame();
 
   // Set up the game
   function setUpGame() {
     domManager.activateRandomButton(randomBoard);
+    domManager.activateStartButton(startGame);
     setBoard(boardTwo);
+    current = playerOne;
   }
 
   // Create a random board
   function randomBoard() {
-    boardOne.clearBoard();
     setBoard(boardOne);
-    domManager.activateStartButton(startGame);
   }
 
   // Set board ready for game
@@ -67,7 +68,6 @@ export const playGame = (() => {
 
   // Start game
   function startGame() {
-    domManager.createBoardListeners(playSquare);
     domManager.activateRestartButton(restartGame);
   }
 
@@ -84,7 +84,11 @@ export const playGame = (() => {
           domManager.showResult('You win!');
           restartGame();
           return;
-        } else computerRound();
+        } else {
+          setTimeout(() => {
+            computerRound();
+          }, 500);
+        }
       }
     }
   }
@@ -108,8 +112,6 @@ export const playGame = (() => {
   }
 
   function restartGame() {
-    boardOne.clearBoard();
-    boardTwo.clearBoard();
     setUpGame();
   }
 
