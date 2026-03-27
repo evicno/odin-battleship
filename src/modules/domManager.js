@@ -4,6 +4,7 @@ import { playGame } from './gameManager.js';
 export const domManager = (() => {
   let gridSize = 0;
   let onSquareClick = null;
+  let dropHandler = null;
   let gameStarted = false;
   const gridOne = document.querySelector('#grid-one');
   const gridTwo = document.querySelector('#grid-two');
@@ -11,6 +12,7 @@ export const domManager = (() => {
   const placeButton = document.querySelector('#place');
   const startButton = document.querySelector('.start button');
   const restartButton = document.querySelector('#restart');
+
   const shipContainer = document.querySelector('.ship-container');
 
   const setGridSize = (size) => {
@@ -21,10 +23,12 @@ export const domManager = (() => {
     return playGame.getBoardOne();
   };
 
+  // Initialize grids before game starts
   function initGrids() {
     createGrid(gridOne);
     createGrid(gridTwo);
     createBoardListeners();
+    createDragListeners();
     gridTwo.dataset.active = 'false';
     restartButton.style.visibility = 'hidden';
   }
@@ -38,9 +42,37 @@ export const domManager = (() => {
     });
   }
 
+  // Create drag event listeners
+  function createDragListeners() {
+    const squares = document.querySelectorAll('.square');
+    squares.forEach((square) => {
+      square.addEventListener('dragover', (event) => {
+        event.preventDefault();
+      });
+      square.addEventListener('drop', (event) => {
+        const ship = document.querySelector('.ship');
+        event.preventDefault();
+        let length = 0;
+        let row = Number(square.dataset.row);
+        let col = Number(square.dataset.col);
+        let direction = '';
+        if (ship != null) {
+          length = Number(ship.dataset.length);
+          direction = ship.dataset.direction;
+        }
+        dropHandler(length, row, col, direction);
+      });
+    });
+  }
+
   // Callback function for grid-two event listeners
   function setClickCallback(fn) {
     onSquareClick = fn;
+  }
+
+  // Callback function for grid-one dropover event listeners
+  function dropCallback(fn) {
+    dropHandler = fn;
   }
 
   // Create the DOM structure of a blank board
@@ -89,23 +121,21 @@ export const domManager = (() => {
     }
   }
 
+  // Activate buttons
   function activateRandomButton(callback) {
     randomButton.addEventListener('click', () => {
       callback();
       clearGrid('grid-one');
+      shipContainer.replaceChildren();
       renderGridOne();
       startButton.disabled = false;
     });
   }
 
-  function activatePlaceButton() {
+  function activatePlaceButton(callback) {
     placeButton.addEventListener('click', () => {
       clearGrid('grid-one');
-      placeShip(5);
-      // placeShip(4);
-      // placeShip(3);
-      // placeShip(3);
-      // placeShip(2);
+      callback();
     });
   }
 
@@ -128,21 +158,25 @@ export const domManager = (() => {
     });
   }
 
-  function placeShip(shipSize) {
-    if (shipSize != 2 && shipSize != 3 && shipSize != 4 && shipSize != 5) {
+  // Render the new ship to drop and allow to change its direction
+  function renderShipToDrag(length) {
+    if (length != 2 && length != 3 && length != 4 && length != 5) {
       return;
     }
     shipContainer.replaceChildren();
     const ship = document.createElement('div');
     ship.classList.add('ship');
-    ship.id = 'size' + shipSize;
+    ship.id = 'size' + length;
     ship.dataset.direction = 'col';
-    for (let i = 0; i < shipSize; i++) {
+    ship.dataset.length = length;
+    ship.draggable = true;
+    shipContainer.appendChild(ship);
+    for (let i = 0; i < length; i++) {
       const shipSquare = document.createElement('div');
       shipSquare.classList.add('ship-square');
       ship.appendChild(shipSquare);
     }
-    shipContainer.appendChild(ship);
+    // Add event listener to allow change of direction
     ship.addEventListener('click', () => {
       if (ship.dataset.direction === 'col') {
         ship.dataset.direction = 'row';
@@ -150,8 +184,10 @@ export const domManager = (() => {
         ship.dataset.direction = 'col';
       }
     });
+    ship.style.visibility = 'visible';
   }
 
+  // Handle the different colors of squares (hit or miss)
   function changeSquareDisplay(grid, row, col, result) {
     let square;
     if (grid === 'two') {
@@ -171,6 +207,13 @@ export const domManager = (() => {
     }
   }
 
+  // Make game ready to start after all ships dropped (manual placement)
+  function makeGameReadyToStart() {
+    shipContainer.replaceChildren();
+    startButton.disabled = false;
+  }
+
+  // Make the app ready for a new game
   function restartGame() {
     gameStarted = false;
     restartButton.style.visibility = 'hidden';
@@ -181,6 +224,7 @@ export const domManager = (() => {
     gridTwo.dataset.active = 'false';
   }
 
+  // Show the result on dialog
   function showResult(text) {
     const dialog = document.querySelector('dialog');
     const result = document.querySelector('dialog p');
@@ -197,13 +241,16 @@ export const domManager = (() => {
   return {
     setGridSize,
     initGrids,
-    createGrid,
+    // createGrid,
+    renderGridOne,
     setClickCallback,
+    dropCallback,
     activateRandomButton,
     activatePlaceButton,
     activateStartButton,
     activateRestartButton,
-    createBoardListeners,
+    renderShipToDrag,
+    makeGameReadyToStart,
     changeSquareDisplay,
     showResult,
   };

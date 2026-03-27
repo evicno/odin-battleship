@@ -139,6 +139,7 @@ dialog::backdrop {
   background-color: rgb(218, 72, 72);
   display: flex;
   align-items: center;
+  cursor: move;
 }
 
 .ship[data-direction='col'] {
@@ -149,13 +150,13 @@ dialog::backdrop {
 .ship[data-direction='row'] {
   height: 32px;
 }
+
 #size5[data-direction='col'] {
   height: 152px;
 }
 
 #size5[data-direction='row'] {
   width: 152px;
-  height: 32px;
 }
 
 #size4[data-direction='col'] {
@@ -163,7 +164,6 @@ dialog::backdrop {
 }
 
 #size4[data-direction='row'] {
-  height: 32px;
   width: 122px;
 }
 
@@ -172,7 +172,6 @@ dialog::backdrop {
 }
 
 #size3[data-direction='row'] {
-  height: 32px;
   width: 92px;
 }
 
@@ -181,6 +180,5 @@ dialog::backdrop {
 }
 
 #size2[data-direction='row'] {
-  height: 32px;
   width: 62px;
 }

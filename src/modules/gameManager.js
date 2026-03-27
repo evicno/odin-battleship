@@ -4,12 +4,19 @@ import { Player } from './player.js';
 import { domManager } from './domManager.js';
 
 export const playGame = (() => {
-  // create players
+  // create players and different settings
   const playerOne = Player('human');
   const playerTwo = Player('computer');
   let current = playerOne;
   let boardOne = playerOne.board;
   let boardTwo = playerTwo.board;
+  let carrier = Ship(5);
+  let battleship = Ship(4);
+  let destroyer = Ship(3);
+  let submarine = Ship(3);
+  let patrolBoat = Ship(2);
+  let shipsToPlace = [carrier, battleship, destroyer, submarine, patrolBoat];
+  let shipIndex = 0;
   const size = boardOne.getSize();
   domManager.setGridSize(size);
 
@@ -19,36 +26,32 @@ export const playGame = (() => {
 
   // Create grids
   domManager.initGrids();
+  domManager.dropCallback(dropShip);
   domManager.setClickCallback(playSquare);
   setUpGame();
 
   // Set up the game
   function setUpGame() {
     domManager.activateRandomButton(randomBoard);
-    domManager.activatePlaceButton();
+    domManager.activatePlaceButton(setBoardManually);
     domManager.activateStartButton(startGame);
-    setBoard(boardTwo);
+    setBoardRandomly(boardTwo);
     current = playerOne;
+    shipIndex = 0;
   }
 
   // Create a random board
   function randomBoard() {
-    setBoard(boardOne);
+    setBoardRandomly(boardOne);
   }
 
-  // Set board ready for game
-  function setBoard(board) {
+  // Set board randomly ready for game
+  function setBoardRandomly(board) {
     board.clearBoard();
-    let carrier = Ship(5);
-    let battleship = Ship(4);
-    let destroyer = Ship(3);
-    let submarine = Ship(3);
-    let patrolBoat = Ship(2);
-    placeShipRandomly(board, carrier);
-    placeShipRandomly(board, battleship);
-    placeShipRandomly(board, destroyer);
-    placeShipRandomly(board, submarine);
-    placeShipRandomly(board, patrolBoat);
+    shipIndex = 0;
+    for (let ship of shipsToPlace) {
+      placeShipRandomly(board, ship);
+    }
   }
 
   // Place a ship randomly on a board
@@ -64,6 +67,44 @@ export const playGame = (() => {
       return;
     } catch {
       placeShipRandomly(board, ship);
+    }
+  }
+
+  // Set player's board with manual placement
+  function setBoardManually() {
+    boardOne.clearBoard();
+    shipIndex = 0;
+    placeNextShip();
+  }
+
+  // Go through array of ships to place them one after another
+  function placeNextShip() {
+    if (shipIndex >= shipsToPlace.length) {
+      domManager.makeGameReadyToStart();
+    }
+    let ship = shipsToPlace[shipIndex];
+    placeShipManually(ship.length);
+  }
+
+  // Place a ship manually on player's board
+  function placeShipManually(length) {
+    domManager.renderShipToDrag(length);
+  }
+
+  // Place ship on the board after dropping
+  function dropShip(length, row, col, direction) {
+    let ship = Ship(length);
+    if (direction != 'row') {
+      ship.changeDirection();
+    }
+    try {
+      boardOne.placeShip(ship, row, col);
+      domManager.renderGridOne();
+      shipIndex++;
+      placeNextShip();
+      return;
+    } catch (e) {
+      console.log(e.message);
     }
   }
 
@@ -112,6 +153,7 @@ export const playGame = (() => {
     }
   }
 
+  // Make data ready for a new game
   function restartGame() {
     setUpGame();
   }
