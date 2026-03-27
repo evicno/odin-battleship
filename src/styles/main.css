@@ -102,7 +102,7 @@ button {
   border-radius: 5px;
 }
 
-button :disabled {
+button:disabled {
   filter: blur(2px);
 }
 

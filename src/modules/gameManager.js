@@ -20,6 +20,19 @@ export const playGame = (() => {
   const size = boardOne.getSize();
   domManager.setGridSize(size);
 
+  function resetSettings() {
+    current = playerOne;
+    carrier = Ship(5);
+    battleship = Ship(4);
+    destroyer = Ship(3);
+    submarine = Ship(3);
+    patrolBoat = Ship(2);
+    shipsToPlace = [carrier, battleship, destroyer, submarine, patrolBoat];
+    shipIndex = 0;
+    boardOne.clearBoard();
+    boardTwo.clearBoard();
+  }
+
   const getBoardOne = () => {
     return boardOne;
   };
@@ -36,8 +49,6 @@ export const playGame = (() => {
     domManager.activatePlaceButton(setBoardManually);
     domManager.activateStartButton(startGame);
     setBoardRandomly(boardTwo);
-    current = playerOne;
-    shipIndex = 0;
   }
 
   // Create a random board
@@ -47,8 +58,7 @@ export const playGame = (() => {
 
   // Set board randomly ready for game
   function setBoardRandomly(board) {
-    board.clearBoard();
-    shipIndex = 0;
+    resetSettings();
     for (let ship of shipsToPlace) {
       placeShipRandomly(board, ship);
     }
@@ -72,8 +82,7 @@ export const playGame = (() => {
 
   // Set player's board with manual placement
   function setBoardManually() {
-    boardOne.clearBoard();
-    shipIndex = 0;
+    resetSettings();
     placeNextShip();
   }
 
@@ -155,6 +164,7 @@ export const playGame = (() => {
 
   // Make data ready for a new game
   function restartGame() {
+    resetSettings();
     setUpGame();
   }
 
