@@ -29,8 +29,6 @@ export const playGame = (() => {
     patrolBoat = Ship(2);
     shipsToPlace = [carrier, battleship, destroyer, submarine, patrolBoat];
     shipIndex = 0;
-    boardOne.clearBoard();
-    boardTwo.clearBoard();
   }
 
   const getBoardOne = () => {
@@ -48,17 +46,21 @@ export const playGame = (() => {
     domManager.activateRandomButton(randomBoard);
     domManager.activatePlaceButton(setBoardManually);
     domManager.activateStartButton(startGame);
+    boardOne.clearBoard();
+    boardTwo.clearBoard();
     setBoardRandomly(boardTwo);
   }
 
   // Create a random board
   function randomBoard() {
+    resetSettings();
+    boardOne.clearBoard();
     setBoardRandomly(boardOne);
   }
 
   // Set board randomly ready for game
   function setBoardRandomly(board) {
-    resetSettings();
+    board.clearBoard();
     for (let ship of shipsToPlace) {
       placeShipRandomly(board, ship);
     }
@@ -83,6 +85,8 @@ export const playGame = (() => {
   // Set player's board with manual placement
   function setBoardManually() {
     resetSettings();
+    boardOne.clearBoard();
+    // setBoardRandomly(boardTwo);
     placeNextShip();
   }
 
